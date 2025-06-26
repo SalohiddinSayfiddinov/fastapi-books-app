@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class Book(BaseModel):
+    id: int
     title: str
     price: float
     image: str
@@ -18,9 +19,13 @@ class Book(BaseModel):
     vendor: str
     special_offer: bool
     stock_status: str
+    offer: bool = False
+    discount: Optional[int] = 0
+    top_of_week: bool = False
 
 BOOKS: List[Book] = [
     Book(
+        id=1,
         title="The Kite Runner",
         price=39.99,
         image="https://example.com/the_kite_runner.jpg",
@@ -36,10 +41,14 @@ BOOKS: List[Book] = [
         isbn="9781594631931",
         vendor="GoodDay",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        offer=True,
+        discount=20,
+        top_of_week=True
     ),
     # 19 more books with varied data
     Book(
+        id=2,
         title="A Brief History of Time",
         price=29.99,
         image="https://example.com/brief_history_of_time.jpg",
@@ -55,9 +64,13 @@ BOOKS: List[Book] = [
         isbn="9780553380163",
         vendor="BookWorld",
         special_offer=False,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        offer=True,
+        discount=15,
+        top_of_week=True
     ),
     Book(
+        id=3,
         title="Sapiens: A Brief History of Humankind",
         price=34.99,
         image="https://example.com/sapiens.jpg",
@@ -76,6 +89,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=4,
         title="The Hobbit",
         price=24.99,
         image="https://example.com/the_hobbit.jpg",
@@ -91,9 +105,13 @@ BOOKS: List[Book] = [
         isbn="9780547928227",
         vendor="BookWorld",
         special_offer=False,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        offer=True,
+        discount=30,
+        top_of_week=True
     ),
     Book(
+        id=5,
         title="To Kill a Mockingbird",
         price=19.99,
         image="https://example.com/to_kill_a_mockingbird.jpg",
@@ -109,9 +127,11 @@ BOOKS: List[Book] = [
         isbn="9780061120084",
         vendor="GoodDay",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        top_of_week=True
     ),
     Book(
+        id=6,
         title="The Selfish Gene",
         price=27.99,
         image="https://example.com/the_selfish_gene.jpg",
@@ -130,6 +150,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=7,
         title="Steve Jobs",
         price=32.99,
         image="https://example.com/steve_jobs.jpg",
@@ -148,6 +169,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=8,
         title="1984",
         price=22.99,
         image="https://example.com/1984.jpg",
@@ -166,6 +188,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=9,
         title="The Alchemist",
         price=18.99,
         image="https://example.com/the_alchemist.jpg",
@@ -181,9 +204,12 @@ BOOKS: List[Book] = [
         isbn="9780061122415",
         vendor="ReadMore",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        offer=True,
+        discount=25
     ),
     Book(
+        id=10,
         title="The Great Gatsby",
         price=21.99,
         image="https://example.com/the_great_gatsby.jpg",
@@ -202,6 +228,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=11,
         title="Thinking, Fast and Slow",
         price=28.99,
         image="https://example.com/thinking_fast_and_slow.jpg",
@@ -217,9 +244,11 @@ BOOKS: List[Book] = [
         isbn="9780374533557",
         vendor="GoodDay",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        top_of_week=True
     ),
     Book(
+        id=12,
         title="Educated",
         price=26.99,
         image="https://example.com/educated.jpg",
@@ -235,9 +264,12 @@ BOOKS: List[Book] = [
         isbn="9780399590504",
         vendor="ReadMore",
         special_offer=False,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        offer=True,
+        discount=30
     ),
     Book(
+        id=13,
         title="Brave New World",
         price=23.99,
         image="https://example.com/brave_new_world.jpg",
@@ -256,6 +288,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=14,
         title="The Catcher in the Rye",
         price=20.99,
         image="https://example.com/the_catcher_in_the_rye.jpg",
@@ -274,6 +307,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=15,
         title="The Power of Habit",
         price=25.99,
         image="https://example.com/the_power_of_habit.jpg",
@@ -292,6 +326,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=16,
         title="The Diary of a Young Girl",
         price=17.99,
         image="https://example.com/diary_of_a_young_girl.jpg",
@@ -310,6 +345,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=17,
         title="The Lord of the Rings",
         price=49.99,
         image="https://example.com/lord_of_the_rings.jpg",
@@ -325,9 +361,11 @@ BOOKS: List[Book] = [
         isbn="9780618640157",
         vendor="GoodDay",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        top_of_week=True
     ),
     Book(
+        id=18,
         title="The Subtle Art of Not Giving a F*ck",
         price=24.99,
         image="https://example.com/subtle_art.jpg",
@@ -346,6 +384,7 @@ BOOKS: List[Book] = [
         stock_status="In Stock"
     ),
     Book(
+        id=19,
         title="The Book Thief",
         price=22.99,
         image="https://example.com/the_book_thief.jpg",
@@ -361,9 +400,12 @@ BOOKS: List[Book] = [
         isbn="9780375842207",
         vendor="BookWorld",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        offer=True,
+        discount=20
     ),
     Book(
+        id=20,
         title="Becoming",
         price=29.99,
         image="https://example.com/becoming.jpg",
@@ -379,6 +421,7 @@ BOOKS: List[Book] = [
         isbn="9781524763138",
         vendor="GoodDay",
         special_offer=True,
-        stock_status="In Stock"
+        stock_status="In Stock",
+        top_of_week=True
     )
 ] 

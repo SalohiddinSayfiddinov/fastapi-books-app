@@ -14,7 +14,7 @@ def signup(user: UserCreate):
     if user.email in users_db or user.email in pending_verifications:
         raise HTTPException(status_code=400, detail="Email already registered or pending verification.")
     otp = SUPER_OTP
-    pending_verifications[user.email] = hash_password(user.password)
+    pending_verifications[user.email] = {"hashed_password": hash_password(user.password), "name": user.name}
     send_verification_email(user.email, otp)
     return {"msg": "Verification code sent to your email."}
 
@@ -24,8 +24,8 @@ def verify(data: UserVerify):
         raise HTTPException(status_code=400, detail="No pending verification for this email.")
     if data.otp != SUPER_OTP:
         raise HTTPException(status_code=400, detail="Invalid OTP.")
-    hashed_password = pending_verifications.pop(data.email)
-    user = User(id=len(users_db)+1, email=data.email, hashed_password=hashed_password, is_verified=True)
+    pending = pending_verifications.pop(data.email)
+    user = User(id=len(users_db)+1, email=data.email, name=pending["name"], hashed_password=pending["hashed_password"], is_verified=True)
     users_db[data.email] = user
     return {"msg": "Email verified. You can now log in."}
 

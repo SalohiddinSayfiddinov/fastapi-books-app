@@ -3,7 +3,7 @@ from typing import List, Optional
 from .models import AUTHORS, Author
 from books.models import BOOKS
 
-router = APIRouter()
+router = APIRouter(tags=["authors"])
 
 @router.get("/authors", response_model=List[Author])
 def list_authors():
