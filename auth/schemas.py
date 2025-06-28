@@ -16,7 +16,10 @@ class UserVerify(BaseModel):
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
-class ResetPasswordRequest(BaseModel):
+class VerifyPasswordResetOTP(BaseModel):
     email: EmailStr
     otp: str
+
+class ResetPasswordRequest(BaseModel):
+    reset_token: str
     new_password: str 

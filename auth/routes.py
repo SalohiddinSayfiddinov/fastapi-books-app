@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from auth.schemas import UserCreate, UserLogin, UserVerify, ForgotPasswordRequest, ResetPasswordRequest
+from auth.schemas import UserCreate, UserLogin, UserVerify, ForgotPasswordRequest, VerifyPasswordResetOTP, ResetPasswordRequest
 from auth.models import User
-from auth.utils import hash_password, verify_password, create_access_token, send_verification_email
+from auth.utils import hash_password, verify_password, create_access_token, create_password_reset_token, verify_password_reset_token, send_verification_email
 from auth.database import users_db, pending_verifications
 from typing import Optional
 
@@ -41,15 +41,46 @@ def login(user: UserLogin):
 def forgot_password(request: ForgotPasswordRequest):
     if request.email not in users_db:
         raise HTTPException(status_code=404, detail="User not found.")
-    # For demo, just send the SUPER_OTP
-    send_verification_email(request.email, SUPER_OTP)
+    
+    # Generate OTP and store it for verification
+    otp = SUPER_OTP
+    pending_verifications[request.email] = {"otp": otp, "type": "password_reset"}
+    
+    # Send OTP to user's email
+    send_verification_email(request.email, otp)
     return {"msg": "Password reset OTP sent to your email."}
+
+@router.post("/verify-password-reset-otp")
+def verify_password_reset_otp(request: VerifyPasswordResetOTP):
+    if request.email not in pending_verifications:
+        raise HTTPException(status_code=400, detail="No pending password reset for this email.")
+    
+    pending_data = pending_verifications[request.email]
+    if pending_data.get("type") != "password_reset":
+        raise HTTPException(status_code=400, detail="No pending password reset for this email.")
+    
+    if request.otp != pending_data["otp"]:
+        raise HTTPException(status_code=400, detail="Invalid OTP.")
+    
+    # Generate password reset token
+    reset_token = create_password_reset_token(request.email)
+    
+    # Clean up pending verification
+    pending_verifications.pop(request.email)
+    
+    return {"msg": "OTP verified. Use the reset token to change your password.", "reset_token": reset_token}
 
 @router.post("/reset-password")
 def reset_password(request: ResetPasswordRequest):
-    if request.email not in users_db:
+    # Verify the reset token
+    email = verify_password_reset_token(request.reset_token)
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token.")
+    
+    if email not in users_db:
         raise HTTPException(status_code=404, detail="User not found.")
-    if request.otp != SUPER_OTP:
-        raise HTTPException(status_code=400, detail="Invalid OTP.")
-    users_db[request.email].hashed_password = hash_password(request.new_password)
+    
+    # Reset password
+    users_db[email].hashed_password = hash_password(request.new_password)
+    
     return {"msg": "Password reset successful."} 
