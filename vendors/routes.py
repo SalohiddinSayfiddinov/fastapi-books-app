@@ -6,8 +6,8 @@ router = APIRouter(tags=["vendors"])
 
 @router.get("/vendors")
 def get_vendors(category: Optional[str] = Query(None, description="Filter by vendor category")):
-    if category and category.lower() != "all":
-        return [vendor for vendor in VENDORS if vendor.category.lower() == category.lower()]
+    if category and category != '0':
+        return [vendor for vendor in VENDORS if vendor.category == int(category)]
     return VENDORS
 
 @router.get("/vendor-categories")
