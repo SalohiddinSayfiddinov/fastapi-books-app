@@ -1,4 +1,6 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
+from typing import Optional
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -22,4 +24,18 @@ class VerifyPasswordResetOTP(BaseModel):
 
 class ResetPasswordRequest(BaseModel):
     reset_token: str
-    new_password: str 
+    new_password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: EmailStr
+    name: str
+    is_verified: bool
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str 
