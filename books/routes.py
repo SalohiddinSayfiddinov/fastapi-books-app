@@ -1,37 +1,44 @@
 from fastapi import APIRouter, Query
 from .models import BOOKS
-from typing import List, Optional
+
 
 router = APIRouter(tags=["books"])
 
-@router.get("/books")
-def list_books(
-    search: Optional[str] = Query(None, description="Search by title or author"),
-    category: Optional[str] = Query(None, description="Filter by category name. Novels, Science, History, Biography, Fantasy")
-):
-    results = BOOKS
+@router.get("/")
+def get_books():
+    return BOOKS
 
-    if search:
-        search_lower = search.lower()
-        results = [
-            book for book in results
-            if search_lower in book.title.lower() or search_lower in book.author.lower()
-        ]
+@router.get("/{book_id}")
+def get_book(book_id: int):
+    for book in BOOKS:
+        if book.id == book_id:
+            return book
+    return {"error": "Book not found"}
 
-    if category:
-        category_lower = category.lower()
-        results = [
-            book for book in results
-            if book.category.lower() == category_lower
-        ]
-
+@router.get("/search/")
+def search_books(q: str = Query(..., description="Search query")):
+    results = []
+    for book in BOOKS:
+        if q.lower() in book.title.lower() or q.lower() in book.author.lower():
+            results.append(book)
     return results
 
-@router.get("/books/offers")
-def get_offer_books():
-    return [book for book in BOOKS if book.offer]
+@router.get("/category/{category}")
+def get_books_by_category(category: str):
+    results = []
+    for book in BOOKS:
+        if book.category.lower() == category.lower():
+            results.append(book)
+    return results
 
+@router.get("/author/{author}")
+def get_books_by_author(author: str):
+    results = []
+    for book in BOOKS:
+        if book.author.lower() == author.lower():
+            results.append(book)
+    return results
 
-@router.get("/books/top")
+@router.get("/top-of-week/")
 def get_top_of_week_books():
     return [book for book in BOOKS if book.top_of_week]

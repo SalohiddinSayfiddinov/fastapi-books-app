@@ -1,5 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship
+from database import Base
 
 class Book(BaseModel):
     id: int
