@@ -32,3 +32,26 @@ app.include_router(categories_router)
 app.include_router(books_router)
 app.include_router(authors_router)
 app.include_router(vendors_router)
+
+
+import subprocess
+from fastapi.responses import JSONResponse
+
+@app.get("/run-migrations")
+def run_migrations():
+    try:
+        result = subprocess.run(["alembic", "upgrade", "head"], capture_output=True, text=True)
+        return JSONResponse(
+            content={
+                "status": "success",
+                "stdout": result.stdout
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "detail": str(e)
+            }
+        )
