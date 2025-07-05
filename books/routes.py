@@ -4,11 +4,11 @@ from .models import BOOKS
 
 router = APIRouter(tags=["books"])
 
-@router.get("/")
+@router.get("/books")
 def get_books():
     return BOOKS
 
-@router.get("/{book_id}")
+@router.get("/books/{book_id}")
 def get_book(book_id: int):
     for book in BOOKS:
         if book.id == book_id:
