@@ -8,12 +8,6 @@ router = APIRouter(tags=["books"])
 def get_books():
     return BOOKS
 
-@router.get("/books/{book_id}")
-def get_book(book_id: int):
-    for book in BOOKS:
-        if book.id == book_id:
-            return book
-    return {"error": "Book not found"}
 
 @router.get("/search/")
 def search_books(q: str = Query(..., description="Search query")):
@@ -42,3 +36,14 @@ def get_books_by_author(author: str):
 @router.get("/top-of-week/")
 def get_top_of_week_books():
     return [book for book in BOOKS if book.top_of_week]
+
+@router.get("/books/offers")
+def get_offer_books():
+    return [book for book in BOOKS if book.offer]
+
+@router.get("/books/{book_id}")
+def get_book(book_id: int):
+    for book in BOOKS:
+        if book.id == book_id:
+            return book
+    return {"error": "Book not found"}
