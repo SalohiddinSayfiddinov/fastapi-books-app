@@ -18,6 +18,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 from database import Base
 from auth.models import User
+from orders.models import Order, OrderStatus
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
