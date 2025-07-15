@@ -31,10 +31,18 @@ class UserResponse(BaseModel):
     email: EmailStr
     name: str
     is_verified: bool
+    image_url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     created_at: datetime
+    updated_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 class TokenResponse(BaseModel):
     access_token: str

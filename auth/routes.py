@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from auth.schemas import UserCreate, UserLogin, UserVerify, ForgotPasswordRequest, VerifyPasswordResetOTP, ResetPasswordRequest, UserResponse, TokenResponse
+from auth.schemas import UserCreate, UserLogin, UserVerify, ForgotPasswordRequest, VerifyPasswordResetOTP, ResetPasswordRequest, UserResponse, TokenResponse, UserUpdate
 from auth.models import User
-from auth.utils import hash_password, verify_password, create_access_token, create_password_reset_token, verify_password_reset_token, send_verification_email
+from auth.utils import hash_password, verify_password, create_access_token, create_password_reset_token, verify_password_reset_token, send_verification_email, get_current_user
 from database import get_db
 from typing import Optional
 
@@ -115,4 +115,45 @@ def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db))
     db_user.hashed_password = hash_password(request.new_password)
     db.commit()
     
-    return {"msg": "Password reset successful."} 
+    return {"msg": "Password reset successful."}
+
+@router.put("/profile", response_model=UserResponse)
+async def update_profile(
+    latitude: Optional[float] = Form(None),
+    longitude: Optional[float] = Form(None),
+    image: Optional[UploadFile] = File(None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Update user profile with image and location data.
+    Image is accepted but not saved (as per requirements for PostgreSQL on Render).
+    """
+    # Update latitude and longitude if provided
+    if latitude is not None:
+        current_user.latitude = latitude
+    if longitude is not None:
+        current_user.longitude = longitude
+    
+    # Handle image upload (accept but don't save)
+    if image:
+        # Validate image file type
+        if not image.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="File must be an image")
+        
+        # For now, we'll just acknowledge that the image was received
+        # In a real application, you might want to upload to a cloud storage service
+        # and save the URL to the database
+        current_user.image_url = f"Image received: {image.filename} (not saved)"
+    
+    db.commit()
+    db.refresh(current_user)
+    
+    return current_user
+
+@router.get("/profile", response_model=UserResponse)
+def get_profile(current_user: User = Depends(get_current_user)):
+    """
+    Get current user's profile information.
+    """
+    return current_user 
